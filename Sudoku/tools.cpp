@@ -1,11 +1,9 @@
 #include "tools.h"
 
-Tools::Tools()
-	:
-	game( game )
-{}
+namespace Tools 
+{
 
-void Tools::ShowBoard()
+void ShowBoard( Game &game )
 {
 	std::cout << "      1   2   3     4   5   6     7   8   9";
 
@@ -40,7 +38,7 @@ void Tools::ShowBoard()
 	}
 }
 
-void Tools::NormaliseBoard()
+void NormaliseBoard(Game & game)
 {
 	for( unsigned short i = 0; i < 81; i++ )
 	{
@@ -63,3 +61,5 @@ void Tools::WipeConsole()
 	}
 	return;
 }
+
+} 

@@ -1,10 +1,8 @@
 #include "Game.h"
 
 Game::Game()
-:
-tool( tool )
 {
-	tool.WipeConsole(); //proof that Game can use object 'tool', because it won't cause error, even though it is not needed here
+	Tools::WipeConsole(); //proof that Game can use object 'tool', because it won't cause error, even though it is not needed here
 	Intro();
 	Logic();
 }
@@ -27,19 +25,19 @@ void Game::Intro()
 	std::cin >> difficulty;
 	if( !( 0 < difficulty && difficulty < 5 ) )
 	{
-		tool.WipeConsole();
+		Tools::WipeConsole();
 		Intro();
 	}
 }
 
 void Game::Logic()
 {
-	tool.NormaliseBoard(); 
+	Tools::NormaliseBoard( *this ); 
 
 	for( ;; )
 	{
-		tool.WipeConsole();
-		tool.ShowBoard();
+		Tools::WipeConsole();
+		Tools::ShowBoard( *this );
 		Move();
 	}
 }

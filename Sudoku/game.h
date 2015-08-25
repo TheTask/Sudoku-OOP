@@ -4,7 +4,6 @@
 #include "tools.h"
 #include <Windows.h>
 
-class Tools;
 
 class Game
 {
@@ -23,7 +22,6 @@ public:
 private:
 	unsigned short *board = new unsigned short[ 81 ]; //main sudoku board, only reason why it is on heap is because
 													  //I am beginner and I want to practise it
-	Tools &tool;
 
 	unsigned short x; //x coord of next move
 	unsigned short y; //y coord of next move

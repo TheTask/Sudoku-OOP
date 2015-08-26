@@ -1,22 +1,52 @@
-#include "Game.h"
+#include "Game.h" 
 
 Game::Game()
 {
-	Tools::WipeConsole(); //proof that Game can use object 'tool', because it won't cause error, even though it is not needed here
+	std::srand( ( unsigned int )std::time( NULL ) );
 	Intro();
 	Logic();
 }
-
 Game::~Game()
 {
 	delete[] board;
 }
+bool Game::CanBePlaced( unsigned short &x,unsigned short &y,unsigned short &value )
+{
+	bool canBePlaced = true;
 
+	for( unsigned short i = 0; i < 9; i++ )
+	{
+		if( board[ i * 9 + x ] == value ) //row
+		{
+			canBePlaced = false;
+		} 
+		if( board[ y * 9 + i ] == value ) //col
+		{
+			canBePlaced = false;
+		}
+	}
+	//block
+	unsigned short blockX = x / 3;
+	unsigned short blockY = y / 3;
+	unsigned short valPos = y * 9 + x;
+
+	for( unsigned short i = 0; i < 3; i++ )
+	{
+		for( unsigned short j = 0; j < 3; j++ )
+		{
+			if( board[ ( blockY * 3 + i ) * 9 + ( blockX * 3 + j ) ] == value )
+			{
+				canBePlaced = false;
+			}
+		}
+	}
+	return canBePlaced;
+}
 void Game::Intro()
 {
 	std::cout << "Sudoku by Marek Borik\n\n"
 		
-		"Choose difficulty:\n" //not implemented yet
+		"Choose difficulty:\n" 
 		"1: East\n"
 		"2: Medium\n"
 		"3: Hard\n"
@@ -29,10 +59,51 @@ void Game::Intro()
 		Intro();
 	}
 }
+void Game::MakeStartingNums()
+{
+	for( short i = 0; i < CalculateDifficulty(); i++ )
+	{
+		unsigned short tempX = rand() % 9;
+		unsigned short tempY = rand() % 9;
+		unsigned short tempVal = ( rand() % 9 ) + 1;
+	
+		if( board[ tempY * 9 + tempX ] == 0  && CanBePlaced( tempX,tempY,tempVal ) )
+		{
+			board[ tempY * 9 + tempX ] = tempVal;
+		}
+		else
+		{
+			i--;
+		}
+	}
+}
+unsigned short Game::CalculateDifficulty()
+{
+	unsigned short finalDifficulty;
 
+	switch( difficulty )
+	{
+	case 1:
+		finalDifficulty = Tools::RandFromRange( 48,53 );
+		break;
+	case 2:
+		finalDifficulty = Tools::RandFromRange( 40,46 );
+		break;
+	case 3:
+		finalDifficulty = Tools::RandFromRange( 33,37 );
+		break;
+	case 4:
+		finalDifficulty = Tools::RandFromRange( 25,28 );
+		break;
+	default:
+		std::cout << "ERROR in CalculateDifficulty()" << std::endl;
+	}
+	return finalDifficulty;
+}
 void Game::Logic()
 {
 	Tools::NormaliseBoard( *this ); 
+	MakeStartingNums();
 
 	for( ;; )
 	{
@@ -41,7 +112,6 @@ void Game::Logic()
 		Move();
 	}
 }
-
 void Game::Move()
 {
 	std::cout << ">  ";
@@ -53,12 +123,11 @@ void Game::Move()
 	}
 	board[ ( y - 1 ) * 9 + ( x - 1 ) ] = value;
 }
-
 void Game::WriteToBoard( unsigned short value,unsigned short &index )
 {
 	board[ index ] = value;
 }
-unsigned short Game::GetFromBoard( unsigned short index )
+unsigned short Game::GetFromBoard( unsigned short index ) const
 {
 	return board[ index ];
 }

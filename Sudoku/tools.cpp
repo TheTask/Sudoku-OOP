@@ -2,7 +2,6 @@
 
 namespace Tools 
 {
-
 void ShowBoard( Game &game )
 {
 	std::cout << "      1   2   3     4   5   6     7   8   9";
@@ -37,15 +36,13 @@ void ShowBoard( Game &game )
 		std::cout << std::endl;
 	}
 }
-
-void NormaliseBoard(Game & game)
+void NormaliseBoard( Game &game )
 {
 	for( unsigned short i = 0; i < 81; i++ )
 	{
-		game.WriteToBoard( 0,i ); //this line of code seems to cause error, game object seems not to be defined
+		game.WriteToBoard( 0,i ); 
 	}
 }
-
 void Tools::WipeConsole()
 {
 	HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -61,5 +58,12 @@ void Tools::WipeConsole()
 	}
 	return;
 }
+unsigned short RandFromRange( unsigned short min,unsigned short max )
+{
+    std::random_device rd; 
+    std::mt19937 engine( rd() );
+    std::uniform_int_distribution<>distr( min,max );
 
+    return distr( engine );
+}
 } 

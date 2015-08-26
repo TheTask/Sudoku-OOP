@@ -2,9 +2,7 @@
 
 Game::Game()
 {
-	std::srand( ( unsigned int )std::time( NULL ) );
 	Intro();
-	Logic();
 }
 Game::~Game()
 {
@@ -47,7 +45,7 @@ void Game::Intro()
 	std::cout << "Sudoku by Marek Borik\n\n"
 		
 		"Choose difficulty:\n" 
-		"1: East\n"
+		"1: Easy\n"
 		"2: Medium\n"
 		"3: Hard\n"
 		"4: Expert\n\n";
@@ -58,14 +56,15 @@ void Game::Intro()
 		Tools::WipeConsole();
 		Intro();
 	}
+	Logic();
 }
 void Game::MakeStartingNums()
 {
 	for( short i = 0; i < CalculateDifficulty(); i++ )
 	{
-		unsigned short tempX = rand() % 9;
-		unsigned short tempY = rand() % 9;
-		unsigned short tempVal = ( rand() % 9 ) + 1;
+		unsigned short tempX = Tools::RandFromRange( 0,8 );
+		unsigned short tempY = Tools::RandFromRange( 0,8 );
+		unsigned short tempVal = Tools::RandFromRange( 1,9 );
 	
 		if( board[ tempY * 9 + tempX ] == 0  && CanBePlaced( tempX,tempY,tempVal ) )
 		{
@@ -104,25 +103,50 @@ void Game::Logic()
 {
 	Tools::NormaliseBoard( *this ); 
 	MakeStartingNums();
+	Tools::CopyToMatte( *this );
 
 	for( ;; )
 	{
 		Tools::WipeConsole();
 		Tools::ShowBoard( *this );
 		Move();
+		if( Finished() )
+		{
+			CheckForWin();
+		}
 	}
 }
 void Game::Move()
 {
-	std::cout << ">  ";
+	Tools::WriteColoredText( WHITE,">  " );
 	std::cin >> value >> x >> y;
 
 	if ( !( ( 0 < value  && value <= 9 ) && ( 0 < x  && x <= 9 ) && ( 0 < y  && y <= 9 ) ) )
 	{
 		Move();	
 	}
-	board[ ( y - 1 ) * 9 + ( x - 1 ) ] = value;
+	if( matte[ ( y - 1 ) * 9 + ( x - 1 ) ] == 0 )
+	{	
+		board[ ( y - 1 ) * 9 + ( x - 1 ) ] = value;
+	}
 }
+bool Game::Finished()
+{
+	bool finished = true;
+	for( unsigned short i = 0; i < 81; i++ )
+	{
+		if( board[ i ] == 0 )
+		{
+			finished = false;
+		}
+	}
+	return finished;
+}
+void Game::CheckForWin()
+{
+
+}
+
 void Game::WriteToBoard( unsigned short value,unsigned short &index )
 {
 	board[ index ] = value;
@@ -130,4 +154,12 @@ void Game::WriteToBoard( unsigned short value,unsigned short &index )
 unsigned short Game::GetFromBoard( unsigned short index ) const
 {
 	return board[ index ];
+}
+void Game::WriteToMatte( unsigned short value,unsigned short &index )
+{
+	matte[ index ] = value;
+}
+unsigned short Game::GetFromMatte( unsigned short index ) const
+{
+	return matte[ index ];
 }

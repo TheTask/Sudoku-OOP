@@ -43,6 +43,7 @@ bool Game::CanBePlaced( unsigned short &x,unsigned short &y,unsigned short &valu
 void Game::Intro()
 {
 	std::cout << "Sudoku by Marek Borik\n\n"
+		"Play by typing: \"value\" \"Xcoord\" \"Ycoord\" \n\n"
 		
 		"Choose difficulty:\n" 
 		"1: Easy\n"
@@ -102,7 +103,8 @@ unsigned short Game::CalculateDifficulty()
 void Game::Logic()
 {
 	Tools::NormaliseBoard( *this ); 
-	MakeStartingNums();
+	//MakeStartingNums();
+	SetBoard();
 	Tools::CopyToMatte( *this );
 
 	for( ;; )
@@ -112,7 +114,10 @@ void Game::Logic()
 		Move();
 		if( Finished() )
 		{
+			Tools::WipeConsole();
+			Tools::ShowBoard( *this );
 			CheckForWin();
+			break;
 		}
 	}
 }
@@ -144,9 +149,56 @@ bool Game::Finished()
 }
 void Game::CheckForWin()
 {
+	bool won = false;
 
+	for( unsigned short i = 0; i < 9; i++ )
+	{
+		std::list< unsigned short > vecRow = { 1,2,3,4,5,6,7,8,9 };
+		std::list< unsigned short > vecCol = { 1,2,3,4,5,6,7,8,9 };
+
+		for( unsigned short j = 0; j < 9; j++ )
+		{
+			for( unsigned short k = 1; k <= 9; k++ )
+			{
+				if( k == board[ i * 9 + j ] )
+				{
+					vecRow.remove( k );
+					break;
+				}
+			}
+			for( unsigned short l = 1; l <= 9; l++ )
+			{
+				if( l == board[ j * 9 + i ] )
+				{
+					vecCol.remove( l );
+					break;
+				}
+			}
+		}
+		if( vecRow.empty() && vecCol.empty() )
+		{
+			won = true;
+		}
+		else
+		{
+			won = false;
+			break;
+		}
+	}
+
+	if( won )
+	{
+		Tools::WriteColoredText( GREEN,"YOU HAVE WON!" );
+		std::cin.get();
+		std::cin.get();
+	}
+	else
+	{
+		Tools::WriteColoredText( RED,"YOU HAVE LOST!" );
+		std::cin.get();
+		std::cin.get();
+	}
 }
-
 void Game::WriteToBoard( unsigned short value,unsigned short &index )
 {
 	board[ index ] = value;
@@ -162,4 +214,24 @@ void Game::WriteToMatte( unsigned short value,unsigned short &index )
 unsigned short Game::GetFromMatte( unsigned short index ) const
 {
 	return matte[ index ];
+}
+
+void Game::SetBoard()
+{
+	unsigned short temp[ 81 ] = { 5,3,4,   6,7,8,   9,1,2, 
+		                          6,7,2,   1,9,5,   3,4,8,
+								  1,9,8,   3,4,2,   5,6,7,
+
+								  8,5,9,   7,6,1,   4,2,3,
+								  4,2,6,   8,5,3,   7,9,1,
+								  7,1,3,   9,2,4,   8,5,6,
+
+								  9,6,1,   5,3,7,   2,8,4,
+								  2,8,7,   4,1,9,   6,3,5,
+								  3,4,5,   2,8,6,   1,7,0   };
+	
+	for( unsigned short i = 0; i < 81; i++ )
+	{
+		board[ i ]  = temp[ i ];
+	}
 }

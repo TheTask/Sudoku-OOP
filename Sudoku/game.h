@@ -31,13 +31,11 @@ private:
 	void Move(); 
 	bool Finished();
 	void CheckForWin();
+	void PlayAgain();
 private:
 	unsigned short *board = new unsigned short[ 81 ]; 		
 	unsigned short *matte = new unsigned short[ 81 ];
 	
-	unsigned short x;
-	unsigned short y; 
-	unsigned short value; 
 	unsigned short difficulty; 
 };
 

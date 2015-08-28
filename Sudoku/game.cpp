@@ -123,6 +123,10 @@ void Game::Logic()
 }
 void Game::Move()
 {
+	unsigned short x;
+	unsigned short y; 
+	unsigned short value; 
+
 	Tools::WriteColoredText( WHITE,">  " );
 	std::cin >> value >> x >> y;
 
@@ -185,20 +189,31 @@ void Game::CheckForWin()
 			break;
 		}
 	}
-
 	if( won )
 	{
-		Tools::WriteColoredText( GREEN,"YOU HAVE WON!" );
-		std::cin.get();
-		std::cin.get();
+		Tools::WriteColoredText( GREEN,"YOU HAVE WON!\n\n" );
+		PlayAgain();
 	}
 	else
 	{
-		Tools::WriteColoredText( RED,"YOU HAVE LOST!" );
-		std::cin.get();
-		std::cin.get();
+		Tools::WriteColoredText( RED,"YOU HAVE LOST!\n\n" );
+		PlayAgain();
 	}
 }
+void Game::PlayAgain()
+{
+	unsigned char c;
+	Tools::WriteColoredText( WHITE,"Play again?  y/n\n" );
+
+	std::cin >> c;
+
+	if( c == 'Y' || c == 'y' )
+	{
+		Tools::WipeConsole();
+		Game new_game;
+	}
+}
+
 void Game::WriteToBoard( unsigned short value,unsigned short &index )
 {
 	board[ index ] = value;
@@ -228,7 +243,7 @@ void Game::SetBoard()
 
 								  9,6,1,   5,3,7,   2,8,4,
 								  2,8,7,   4,1,9,   6,3,5,
-								  3,4,5,   2,8,6,   1,7,0   };
+								  3,4,5,   2,8,6,   1,0,0   };
 	
 	for( unsigned short i = 0; i < 81; i++ )
 	{
